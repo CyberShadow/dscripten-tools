@@ -70,7 +70,6 @@ void main(string[] args)
 			emccArgs ~= [
 				"--pre-js", thisExePath.dirName.buildPath("worker.pre.js"),
 				"-s", "BUILD_AS_WORKER=1",
-				"-s", `EXPORTED_FUNCTIONS=['_one']`, // TODO!
 			];
 
 		if (compilerOpts.canFind("-O"))
