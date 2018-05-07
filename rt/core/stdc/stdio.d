@@ -646,7 +646,8 @@ else version( CRuntime_Bionic )
 else version( dscripten )
 {
     alias ulong fpos_t; // TODO
-    struct FILE;
+    struct _iobuf;
+    alias _iobuf FILE;
 }
 else
 {
@@ -928,6 +929,12 @@ else version( CRuntime_Bionic )
 }
 else version( dscripten )
 {
+    enum
+    {
+        _IOFBF = 0, // TODO
+        // _IOLBF = 1,
+        // _IONBF = 2,
+    }
 }
 else
 {
@@ -1436,6 +1443,8 @@ else version( CRuntime_Bionic )
 }
 else version( dscripten )
 {
+    int  snprintf(scope char* s, size_t n, scope const char* format, ...);
+
     /// TODO
 }
 else
