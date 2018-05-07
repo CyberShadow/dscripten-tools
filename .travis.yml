@@ -1,0 +1,11 @@
+language: d
+d: dmd-2.076.0
+
+sudo: false
+
+install:
+  - git clone https://github.com/Ace17/dscripten
+  - cd dscripten && ./fetch_toolchain
+
+script:
+ - cd test && ./run-tests.sh
