@@ -34,8 +34,6 @@ void main(string[] args)
 	auto compilerOpts = args[1..$];
 
 	// Add runtime to import paths
-	compilerOpts = ["-I" ~ thisExePath.dirName.buildPath("rt")] ~ compilerOpts;
-
 	string objDir, outputFile;
 	compilerOpts.filter!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
 	bool build = !compilerOpts.canFind("-o-") && outputFile;
@@ -46,7 +44,13 @@ void main(string[] args)
 		enforce(objDir, "Building with no objDir?");
 	}
 	enum target = "asmjs-unknown-emscripten";
-	compilerOpts = ["-mtriple=" ~ target] ~ compilerOpts;
+	compilerOpts = [
+		"-mtriple=" ~ target,
+		"-version=dscripten",
+		"-conf=" ~ thisExePath.dirName.buildPath("ldc2.conf"),
+		"-I" ~ thisExePath.dirName.buildPath("rt"),
+		"-I" ~ llvmJSPath.buildPath("include", "d"),
+	] ~ compilerOpts;
 
 	run([compiler] ~ compilerOpts);
 
