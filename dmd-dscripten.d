@@ -66,7 +66,6 @@ void main(string[] args)
 		"-conf=" ~ toolsPath.buildPath("ldc2.conf"),
 		"-I" ~ toolsPath.buildPath("rt"),
 		"-I" ~ llvmJSPath.buildPath("include", "d"),
-		"-betterC",
 	] ~ compilerOpts;
 
 	run([compiler] ~ compilerOpts);

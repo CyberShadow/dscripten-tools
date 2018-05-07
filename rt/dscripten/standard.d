@@ -3,6 +3,8 @@ module dscripten.standard;
 
 pragma(LDC_no_moduleinfo);
 
+extern(C) void* _Dmodule_ref;
+
 void deleteStruct(T)(T * r) nothrow
 {
   .destroy(*r);
