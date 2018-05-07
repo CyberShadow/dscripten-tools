@@ -65,6 +65,7 @@ void main(string[] args)
 		"-conf=" ~ thisExePath.dirName.buildPath("ldc2.conf"),
 		"-I" ~ thisExePath.dirName.buildPath("rt"),
 		"-I" ~ llvmJSPath.buildPath("include", "d"),
+		"-betterC",
 	] ~ compilerOpts;
 
 	run([compiler] ~ compilerOpts);
