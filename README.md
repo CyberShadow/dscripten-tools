@@ -67,7 +67,7 @@ void myFunc(char* data, int size)
 {
     foreach (i; 0..10)
 	{
-		char[10] buf;
+		char[32] buf;
 		sprintf(buf.ptr, "Working... %d", i);
         workerRespondProvisionally(buf.ptr[0..strlen(buf.ptr)]);
     }
