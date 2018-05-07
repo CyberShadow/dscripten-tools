@@ -25,3 +25,60 @@ The tools read a few environment variables:
 Example
 -------
 
+### `worker.html`
+
+```html
+<!doctype html>
+<html>
+	<title>Dscripten WebWorker test</title>
+	<meta charset="UTF-8">
+
+	<script>
+	 var w = new Worker('worker.js');
+	 w.onmessage = function(event){
+		 var text = (new TextDecoder("utf-8")).decode(event.data.data);
+		 document.getElementById("result").innerHTML += text + '<br>';
+	 };
+
+	 w.postMessage({'funcName':'myFunc', 'data':'', 'callbackId':123});
+	</script>
+
+	<body>
+		<div id="result"></div>
+	</body>
+</html>
+```
+
+### `worker.d`
+
+```d
+module worker;
+
+import core.stdc.stdio;
+import core.stdc.string;
+
+import dscripten.emscripten;
+
+import ldc.attributes;
+
+@assumeUsed
+extern(C)
+void myFunc(char* data, int size)
+{
+    foreach (i; 0..10)
+	{
+		char[10] buf;
+		sprintf(buf.ptr, "Working... %d", i);
+        workerRespondProvisionally(buf.ptr[0..strlen(buf.ptr)]);
+    }
+    workerRespond("Done!");
+}
+```
+
+Compile with:
+
+```shell
+$ rdmd-dscripten --compiler=dmd-dscripten --build-only worker.d
+```
+
+This will create `worker.js`.
