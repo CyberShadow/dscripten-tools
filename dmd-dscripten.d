@@ -10,7 +10,7 @@
    
 module dmd_dscripten;
 
-import core.sys.posix.unistd;
+import core.sys.posix.unistd : isatty;
 
 import std.algorithm.iteration;
 import std.algorithm.searching;
@@ -20,7 +20,7 @@ import std.file;
 import std.format;
 import std.path;
 import std.process;
-import std.stdio;
+import std.stdio : stdout, stderr;
 
 bool verbose;
 
@@ -36,15 +36,27 @@ void main(string[] args)
 	auto compiler = llvmJSPath.buildPath("bin", "ldmd2");
 	auto compilerOpts = args[1..$];
 
+	enum objsLink = ".dscripten-objs"; scope(exit) cleanLink(objsLink);
+	enum rootLink = ".dscripten-root"; scope(exit) cleanLink(rootLink);
+
 	// Add runtime to import paths
 	string objDir, outputFile;
 	compilerOpts.filter!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
 	bool build = !compilerOpts.canFind("-o-") && outputFile;
 	if (build)
 	{
-		compilerOpts = ["-output-bc", "-op"] ~ compilerOpts.filter!(opt => !opt.startsWith("-of")).array;
 		compilerOpts.filter!(opt => opt.startsWith("-od")).each!(opt => objDir = opt[3..$]);
 		enforce(objDir, "Building with no objDir?");
+
+		// Ugly work-around for missing -oq
+		cleanLink(objsLink); symlink(objDir, objsLink);
+		cleanLink(rootLink); symlink("/"   , rootLink);
+
+		foreach (ref arg; compilerOpts)
+			if (!arg.startsWith("-") && arg.endsWith(".d") && exists(arg))
+				arg = rootLink ~ absolutePath(arg);
+
+		compilerOpts = ["-output-bc", "-od" ~ objsLink, "-op"] ~ compilerOpts.filter!(opt => !opt.startsWith("-of") && !opt.startsWith("-od")).array;
 	}
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
@@ -94,6 +106,13 @@ void main(string[] args)
 		if (exists(outputFile ~ ".js"))
 			rename(outputFile ~ ".js", outputFile);
 	}
+}
+
+void cleanLink(string link)
+{
+	try
+		remove(link);
+	catch (Exception) {}
 }
 
 void run(string[] args)
