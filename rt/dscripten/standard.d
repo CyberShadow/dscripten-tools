@@ -3,13 +3,6 @@ module dscripten.standard;
 
 pragma(LDC_no_moduleinfo);
 
-extern(C) int printf(const(char)*, ...) nothrow;
-extern(C) void exit(int) nothrow;
-extern(C) void* malloc(size_t) nothrow;
-extern(C) void* calloc(int, size_t) nothrow;
-extern(C) void free(void*) nothrow;
-extern(C) void* memcpy(void*, const(void)*, size_t) pure nothrow;
-
 void deleteStruct(T)(T * r) nothrow
 {
   .destroy(*r);
