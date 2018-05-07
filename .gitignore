@@ -1,3 +1,4 @@
 /dmd-dscripten
 /rdmd-dscripten
+*.o
 *.bc
