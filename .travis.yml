@@ -4,8 +4,10 @@ d: dmd-2.076.0
 sudo: false
 
 install:
-  - git clone https://github.com/Ace17/dscripten
-  - cd dscripten && ./fetch_toolchain
+  # git clone https://github.com/Ace17/dscripten
+  # cd dscripten && ./fetch_toolchain
+  # cd /tmp && tar Jcvf toolchains.tar.xz --exclude toolchains/emscripten/.git --exclude toolchains/emscripten/tests toolchains
+  - curl -fsS https://thecybershadow.net/d/toolchains.tar.xz | tar Jxv -C /tmp
 
 script:
  - cd test && ./run-tests.sh
