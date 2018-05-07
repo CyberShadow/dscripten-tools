@@ -20,11 +20,12 @@ import std.path;
 import std.process;
 import std.stdio;
 
-//debug debug = verbose;
+bool verbose;
 
 void main(string[] args)
 {
-	debug(verbose) stderr.writeln("dmd-dscripten: Args: ", args[1..$]);
+	verbose = args[1..$].canFind("-v");
+	if (verbose) stderr.writeln("dmd-dscripten: Args: ", args[1..$]);
 
 	auto toolchainsPath = environment.get("DSCRIPTEN_TOOLCHAINS", "/tmp/toolchains");
 	auto llvmJSPath = environment.get("LLVMJS", toolchainsPath.buildPath("llvm-js"));
@@ -95,7 +96,7 @@ void main(string[] args)
 
 void run(string[] args)
 {
-	debug(verbose) stderr.writeln("dmd-dscripten: Exec: ", args);
+	if (verbose) stderr.writeln("dmd-dscripten: Exec: ", args);
 	auto result = spawnProcess(args).wait();
 	enforce(result == 0, "%s exited with status %d".format(args[0].baseName, result));
 }

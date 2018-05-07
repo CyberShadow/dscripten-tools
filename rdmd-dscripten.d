@@ -16,11 +16,10 @@ import std.process;
 import std.range.primitives;
 import std.stdio;
 
-//debug debug = verbose;
-
 void main(string[] args)
 {
-	debug(verbose) stderr.writeln("rdmd-dscripten: Args: ", args[1..$]);
+	bool verbose = args[1..$].canFind("--chatty");
+	if (verbose) stderr.writeln("rdmd-dscripten: Args: ", args[1..$]);
 
 	auto realRDMD = environment.get("DSCRIPTEN_RDMD", "/usr/bin/rdmd");
 
@@ -37,6 +36,6 @@ void main(string[] args)
 	}
 
 	auto cmdLine = [realRDMD] ~ rdmdOpts;
-	debug(verbose) stderr.writeln("rdmd-dscripten: Exec: ", cmdLine);
+	if (verbose) stderr.writeln("rdmd-dscripten: Exec: ", cmdLine);
 	execv(cmdLine[0], cmdLine);
 }
