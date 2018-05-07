@@ -10,4 +10,5 @@ install:
   - curl -fsS https://thecybershadow.net/d/toolchains.tar.xz | tar Jxv -C /tmp
 
 script:
- - cd test && ./run-tests.sh
+  - export DSCRIPTEN_RDMD=$(which rdmd)
+  - cd test && ./run-tests.sh
