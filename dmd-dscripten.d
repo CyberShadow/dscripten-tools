@@ -86,9 +86,10 @@ void main(string[] args)
 		];
 
 		// TODO: make this customizable somehow
+		// It doesn't hurt for any use case, though, just adds some
+		// WebWorker-specific declarations to the .js output.
 		if (true)
 			emccArgs ~= [
-				"--pre-js", toolsPath.buildPath("worker.pre.js"),
 				"-s", "BUILD_AS_WORKER=1",
 			];
 
