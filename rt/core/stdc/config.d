@@ -96,8 +96,8 @@ else version( Posix )
 }
 else version( dscripten )
 {
-    alias int   c_long;
-    alias uint  c_ulong;
+    alias int   c_long;  // TODO
+    alias uint  c_ulong; // TODO
 }
 
 version( CRuntime_Microsoft )

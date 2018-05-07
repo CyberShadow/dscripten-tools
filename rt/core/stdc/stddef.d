@@ -33,6 +33,5 @@ else version( Posix )
 }
 else version( dscripten )
 {
-	/// ???
-    alias dchar wchar_t;
+    alias dchar wchar_t; /// TODO
 }

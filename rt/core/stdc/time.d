@@ -67,6 +67,7 @@ else version( Posix )
 }
 else version( dscripten )
 {
+    // TODO
     struct tm
     {
         int     tm_sec;     /// seconds after the minute [0-60]
@@ -94,8 +95,8 @@ else version ( Windows )
 }
 else version ( dscripten )
 {
-    alias int time_t;
-    alias int clock_t;
+    alias int time_t;  // TODO
+    alias int clock_t; // TODO
 }
 
 ///
