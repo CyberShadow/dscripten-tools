@@ -21,6 +21,7 @@ The tools read a few environment variables:
 - `DSCRIPTEN_TOOLCHAINS` - path to toolchains build by `fetch_toolchain` (default: `/tmp/toolchains`)
 - `LLVMJS` - path to Dscripten's LDC (default: `$DSCRIPTEN_TOOLCHAINS/llvm-js`)
 - `EMSCRIPTEN` - path to Dscripten's Emscripten (default: `$DSCRIPTEN_TOOLCHAINS/emscripten`)
+- `DSCRIPTEN_TOOLS` - path to the root of this repository (default: `thisExePath.dirName` - the directory the tool's executable is in)
 
 Example
 -------

@@ -32,6 +32,7 @@ void main(string[] args)
 	auto toolchainsPath = environment.get("DSCRIPTEN_TOOLCHAINS", "/tmp/toolchains");
 	auto llvmJSPath = environment.get("LLVMJS", toolchainsPath.buildPath("llvm-js"));
 	auto emscriptenPath = environment.get("EMSCRIPTEN", toolchainsPath.buildPath("emscripten"));
+	auto toolsPath = environment.get("DSCRIPTEN_TOOLS", thisExePath.dirName);
 
 	auto compiler = llvmJSPath.buildPath("bin", "ldmd2");
 	auto compilerOpts = args[1..$];
@@ -62,8 +63,8 @@ void main(string[] args)
 	compilerOpts = [
 		"-mtriple=" ~ target,
 		"-version=dscripten",
-		"-conf=" ~ thisExePath.dirName.buildPath("ldc2.conf"),
-		"-I" ~ thisExePath.dirName.buildPath("rt"),
+		"-conf=" ~ toolsPath.buildPath("ldc2.conf"),
+		"-I" ~ toolsPath.buildPath("rt"),
 		"-I" ~ llvmJSPath.buildPath("include", "d"),
 		"-betterC",
 	] ~ compilerOpts;
@@ -88,7 +89,7 @@ void main(string[] args)
 		// TODO: make this customizable somehow
 		if (true)
 			emccArgs ~= [
-				"--pre-js", thisExePath.dirName.buildPath("worker.pre.js"),
+				"--pre-js", toolsPath.buildPath("worker.pre.js"),
 				"-s", "BUILD_AS_WORKER=1",
 			];
 
