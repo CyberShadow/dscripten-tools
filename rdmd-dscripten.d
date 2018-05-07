@@ -38,4 +38,5 @@ void main(string[] args)
 	auto cmdLine = [realRDMD] ~ rdmdOpts;
 	if (verbose) stderr.writeln("rdmd-dscripten: Exec: ", cmdLine);
 	execv(cmdLine[0], cmdLine);
+	throw new Exception("Failed to exec into " ~ realRDMD);
 }
