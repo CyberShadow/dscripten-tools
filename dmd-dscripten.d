@@ -10,6 +10,8 @@
    
 module dmd_dscripten;
 
+import core.sys.posix.unistd;
+
 import std.algorithm.iteration;
 import std.algorithm.searching;
 import std.array;
@@ -24,7 +26,7 @@ bool verbose;
 
 void main(string[] args)
 {
-	verbose = args[1..$].canFind("-v");
+	verbose = args[1..$].canFind("-v") && isatty(stdout.fileno);
 	if (verbose) stderr.writeln("dmd-dscripten: Args: ", args[1..$]);
 
 	auto toolchainsPath = environment.get("DSCRIPTEN_TOOLCHAINS", "/tmp/toolchains");
