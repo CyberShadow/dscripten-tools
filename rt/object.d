@@ -1515,3 +1515,16 @@ bool __equals(T1, T2)(T1[] lhs, T2[] rhs)
         return true;
     }
 }
+
+T[] dup(T)(const(T)[] arr)
+{
+    auto p = cast(T*)malloc(T.sizeof * arr.length);
+    auto res = p[0..arr.length];
+    res[] = arr[];
+    return res;
+}
+
+immutable(T)[] idup(T)(T[] arr)
+{
+    return cast(immutable)arr.dup;
+}
