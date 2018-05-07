@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -xeuo pipefail
 
 # Ensure tools are built
 
@@ -12,7 +12,8 @@ for dir in ./t????-*
 do
 	(
 		cd "$dir"
-		../../rdmd-dscripten --compiler=../../dmd-dscripten --build-only test.d
+		../../rdmd-dscripten --chatty -v --compiler=../../dmd-dscripten --build-only test.d
+		find ..
 		node test.js > output.txt
 		diff -u output.exp output.txt
 	)
