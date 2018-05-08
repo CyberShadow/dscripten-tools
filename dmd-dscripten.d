@@ -82,6 +82,9 @@ void main(string[] args)
 				throw new Exception("Dirty object directory: " ~ objDir);
 		}
 
+		// rdmd will never add object.d, so add it ourselves
+		compilerOpts ~= toolsPath.buildPath("rt", "object.d");
+
 		// Ugly work-around for missing -oq
 		cleanLink(objsLink); symlink(objDir, objsLink);
 		cleanLink(rootLink); symlink("/"   , rootLink);
