@@ -647,7 +647,7 @@ else version( dscripten )
 {
     alias ulong fpos_t; // TODO
     struct _iobuf;
-    alias _iobuf FILE;
+    alias shared(_iobuf) FILE;
 }
 else
 {
@@ -935,6 +935,10 @@ else version( dscripten )
         // _IOLBF = 1,
         // _IONBF = 2,
     }
+
+    extern shared FILE* stdin;
+    extern shared FILE* stdout;
+    extern shared FILE* stderr;
 }
 else
 {
