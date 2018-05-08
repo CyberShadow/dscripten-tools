@@ -13,6 +13,7 @@ module dmd_dscripten;
 import core.sys.posix.unistd : isatty;
 
 import std.algorithm.iteration;
+import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.array;
 import std.exception;
@@ -47,11 +48,11 @@ void main(string[] args)
 
 	// Add runtime to import paths
 	string objDir, outputFile;
-	compilerOpts.filter!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
+	compilerOpts.extract!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
 	bool build = !compilerOpts.canFind("-o-") && outputFile;
 	if (build)
 	{
-		compilerOpts.filter!(opt => opt.startsWith("-od")).each!(opt => objDir = opt[3..$]);
+		compilerOpts.extract!(opt => opt.startsWith("-od")).each!(opt => objDir = opt[3..$]);
 		enforce(objDir, "Building with no objDir?");
 
 		// Ugly work-around for missing -oq
@@ -62,7 +63,7 @@ void main(string[] args)
 			if (!arg.startsWith("-") && arg.endsWith(".d") && exists(arg))
 				arg = rootLink ~ absolutePath(arg);
 
-		compilerOpts = ["-output-bc", "-od" ~ objsLink, "-op"] ~ compilerOpts.filter!(opt => !opt.startsWith("-of") && !opt.startsWith("-od")).array;
+		compilerOpts = ["-output-bc", "-od" ~ objsLink, "-op"] ~ compilerOpts;
 	}
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
@@ -113,6 +114,25 @@ void main(string[] args)
 		if (exists(outputFile ~ ".js"))
 			rename(outputFile ~ ".js", outputFile);
 	}
+}
+
+/// Remove and return all elements of `arr` matching `pred`.
+string[] extract(alias pred)(ref string[] arr)
+{
+	string[] result;
+	size_t i = 0;
+	while (i < arr.length)
+	{
+		auto e = arr[i];
+		if (pred(e))
+		{
+			result ~= e;
+			arr = arr.remove(i);
+		}
+		else
+			i++;
+	}
+	return result;
 }
 
 void cleanLink(string link)
