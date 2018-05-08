@@ -11,6 +11,11 @@ import dscripten.memory;
 
 extern(C) void gc_init();
 
+void puts(in char[] s)
+{
+	printf("%.*s\n", s.length, s.ptr);
+}
+
 extern(C)
 int main()
 {
@@ -18,6 +23,7 @@ int main()
 	gc_init();
 	Appender!string app;
 	formattedWrite(app, "%d + %d = %d", 2, 2, 4);
-	printf("%.*s\n", app.data.length, app.data.ptr);
+	puts(app.data);
+	puts(format("On the %s!", "heap"));
 	return 0;
 }
