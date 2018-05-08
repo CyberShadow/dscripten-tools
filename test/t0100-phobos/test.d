@@ -1,6 +1,7 @@
 // Some limited Phobos tests
 
 import std.array;
+import std.format;
 import std.math;
 
 import core.stdc.stdio;
@@ -16,7 +17,7 @@ int main()
 	printf("%f\n", sqrt(2.0));
 	gc_init();
 	Appender!string app;
-	app.put("Hi there!");
+	formattedWrite(app, "%d + %d = %d", 2, 2, 4);
 	printf("%.*s\n", app.data.length, app.data.ptr);
 	return 0;
 }
