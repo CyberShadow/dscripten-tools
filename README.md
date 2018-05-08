@@ -1,4 +1,4 @@
-Dscripten Build Tools
+Dscripten Build Tools [![Build Status](https://travis-ci.org/CyberShadow/dscripten-tools.svg?branch=master)](https://travis-ci.org/CyberShadow/dscripten-tools)
 =====================
 
 These allow using [dscripten](https://github.com/Ace17/dscripten) to
