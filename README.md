@@ -20,7 +20,7 @@ There are two ways to use this toolchain:
 1. Invoke the tools directly (e.g. `path/to/rdmd-dscripten --compiler=path/to/dmd-dscripten --build-only worker.d`)
 2. Prepend the `bin` directory to your `PATH`, so that it overrides the standard `dmd` and `rdmd` binaries.
 
-Because these tools attempt to implement the same command-line interface as dmd/rdmd, the second method can be used with any programs (e.g. build tools, error highlighting in editors) without needing to configure them.
+Because these tools attempt to implement the same command-line interface as dmd/rdmd, the second method can be used with any programs (e.g. build tools, error highlighting in editors) without needing to configure them. For example, Dub can be used to build programs in its `--rdmd` mode.
 
 In addition to the usual switches and `.d` files, `dmd-dscripten` also understands how to handle `.c`, `.llvm` and `.bc` files on its command line, and will appropriately compile or otherwise include them into the compilation. See the test suite for examples.
 
