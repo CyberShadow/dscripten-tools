@@ -37,6 +37,11 @@ void main(string[] args)
 	auto compiler = llvmJSPath.buildPath("bin", "ldmd2");
 	auto compilerOpts = args[1..$];
 
+	// Not only are the produced files not (directly) executable,
+	// -run changes how the command-line is parsed,
+	// so detect and forbid it explicitly to avoid any possible weird error messages.
+	enforce(!compilerOpts.canFind("-run"), "Can't use -run with dscripten!");
+
 	enum objsLink = ".dscripten-objs"; scope(exit) cleanLink(objsLink);
 	enum rootLink = ".dscripten-root"; scope(exit) cleanLink(rootLink);
 
