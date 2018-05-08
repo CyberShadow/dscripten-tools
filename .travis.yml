@@ -4,11 +4,17 @@ d: dmd-2.076.0
 sudo: false
 
 install:
-  # git clone https://github.com/Ace17/dscripten
-  # cd dscripten && ./fetch_toolchain
-  # cd /tmp && tar Jcvf toolchains.tar.xz --exclude toolchains/emscripten/.git --exclude toolchains/emscripten/tests toolchains
+  # Get the toolchain
+  # Instead of building it from source, like so:
+  # - git clone https://github.com/Ace17/dscripten
+  # - cd dscripten && ./fetch_toolchain
+  # - cd /tmp && tar Jcvf toolchains.tar.xz --exclude toolchains/emscripten/.git --exclude toolchains/emscripten/tests toolchains
+  # We get a prebuilt tarball, as building it from source takes VERY long (more than Travis' 60 minutes limit all by itself).
   - curl -fsS https://thecybershadow.net/d/toolchains.tar.xz | tar Jxv -C /tmp
-  - PATH=/tmp/toolchains/llvm-js/bin:$PATH /tmp/toolchains/emscripten/emcc --version # create ~/.emscripten
+
+  # Initialize and create ~/.emscripten
+  # Prepend /usr/bin here too, to avoid pyenv bug: https://github.com/pyenv/pyenv/issues/1158
+  - PATH=/tmp/toolchains/llvm-js/bin:/usr/bin:$PATH /tmp/toolchains/emscripten/emcc --version
 
 script:
   - export DSCRIPTEN_RDMD=$(which rdmd)
