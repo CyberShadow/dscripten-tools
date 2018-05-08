@@ -311,23 +311,9 @@ else version( Solaris )
 }
 else version( dscripten )
 {
-    // import core.stdc.config : c_ulong;
-
-    // enum FEX_NUM_EXC = 12;
-
-    // struct fex_handler_t
-    // {
-    //     int             __mode;
-    //     void function() __handler;
-    // }
-
-    struct fenv_t; // TODO
-    // {
-    //     fex_handler_t[FEX_NUM_EXC]  __handler;
-    //     c_ulong                     __fsr;
-    // }
-
-    alias int fexcept_t;
+    // TODO STUB: dscripten does not have a floating-point environment
+    struct fenv_t;
+    struct fexcept_t;
 }
 else
 {

@@ -5431,7 +5431,11 @@ struct FloatingPointControl
     }
     else version (dscripten)
     {
-        // TODO
+        // TODO STUB: dscripten does not support floating-point flags
+        enum : ExceptionMask
+        {
+            allExceptions = 0xFF,
+        }
     }
     else
         static assert(false, "Not implemented for this architecture");
