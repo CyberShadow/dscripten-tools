@@ -8,6 +8,7 @@ install:
   # cd dscripten && ./fetch_toolchain
   # cd /tmp && tar Jcvf toolchains.tar.xz --exclude toolchains/emscripten/.git --exclude toolchains/emscripten/tests toolchains
   - curl -fsS https://thecybershadow.net/d/toolchains.tar.xz | tar Jxv -C /tmp
+  - PATH=/tmp/toolchains/llvm-js/bin:$PATH /tmp/toolchains/emscripten/emcc --version # create ~/.emscripten
 
 script:
   - export DSCRIPTEN_RDMD=$(which rdmd)
