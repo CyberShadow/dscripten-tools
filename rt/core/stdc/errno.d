@@ -75,6 +75,14 @@ else version (Darwin)
         alias errno = __error;
     }
 }
+else version (dscripten)
+{
+    extern (C)
+    {
+        ref int __errno_location();
+        alias errno = __errno_location;
+    }
+}
 else
 {
     ///

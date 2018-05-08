@@ -339,6 +339,8 @@ else version (GENERIC_IO)
 
     alias FLOCK = flockfile;
     alias FUNLOCK = funlockfile;
+
+    alias fopen = core.stdc.stdio.fopen;
 }
 else
 {
@@ -3048,6 +3050,10 @@ $(D Range) that locks the file and allows fast writing to it.
                     else version (Posix)
                     {
                         trustedFPUTWC(c, handle_);
+                    }
+                    else version (dscripten)
+                    {
+                        assert(false, "Unsupported");
                     }
                     else
                     {
