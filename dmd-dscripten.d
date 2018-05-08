@@ -103,18 +103,15 @@ void main(string[] args)
 
 		foreach (cFile; cFiles)
 		{
-			auto llvmFile = objDir.buildPath("c-" ~ toHexString(md5Of(cFile)) ~ ".llvm");
+			auto bcFile = objDir.buildPath("c-" ~ toHexString(md5Of(cFile)) ~ ".bc");
 			run([
-				llvmJSPath.buildPath("bin", "clang"),
-				"--target=" ~ target,
-				"-S",
+				emscriptenPath.buildPath("emcc"),
 				"-c",
-				"-emit-llvm",
 				cFile,
-				"-o", llvmFile,
+				"-o", bcFile,
 				// TODO: optimize?
 			]);
-			llvmFiles ~= llvmFile;
+			bcFiles ~= bcFile;
 		}
 
 		foreach (llvmFile; llvmFiles)
