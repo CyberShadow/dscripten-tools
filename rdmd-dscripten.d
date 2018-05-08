@@ -35,6 +35,18 @@ void main(string[] args)
 		rdmdOpts = ["-of" ~ jsFile] ~ rdmdOpts;
 	}
 
+	// Compile code in Druntime/Phobos modules.
+	// Needed to use non-templated functions/types.
+	// Normally, they are in libphobos.a or such, but there is no
+	// equivalent in our case.
+	// If necessary, this can be canceled out again by using --exclude
+	// on this rdmd's command line.
+	rdmdOpts = [
+		"--include=std",
+		"--include=etc",
+		"--include=core",
+	] ~ rdmdOpts;
+
 	auto cmdLine = [realRDMD] ~ rdmdOpts;
 	if (verbose) stderr.writeln("rdmd-dscripten: Exec: ", cmdLine);
 	execv(cmdLine[0], cmdLine);
