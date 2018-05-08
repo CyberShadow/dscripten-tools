@@ -60,11 +60,24 @@ void main(string[] args)
 	string objDir, outputFile;
 	compilerOpts.extract!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
 	bool build = !compilerOpts.canFind("-o-");
+
 	if (build)
 	{
 		enforce(outputFile, "Building with no outputFile?");
 		compilerOpts.extract!(opt => opt.startsWith("-od")).each!(opt => objDir = opt[3..$]);
 		enforce(objDir, "Building with no objDir?");
+
+		// Ensure the object directory is empty, as we will be globbing it later.
+		if (objDir.exists && !objDir.dirEntries("*.bc", SpanMode.depth).empty)
+		{
+			if (objDir.startsWith("/tmp/.rdmd-"))
+			{
+				rmdirRecurse(objDir);
+				mkdir(objDir);
+			}
+			else
+				throw new Exception("Dirty object directory: " ~ objDir);
+		}
 
 		// Ugly work-around for missing -oq
 		cleanLink(objsLink); symlink(objDir, objsLink);
@@ -81,10 +94,6 @@ void main(string[] args)
 	auto cFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".c"));
 	auto llvmFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".llvm"));
 	auto bcFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".bc"));
-
-	// Ensure the object directory is empty, as we will be globbing it later.
-	if (build && objDir.exists && !objDir.dirEntries("*.bc", SpanMode.depth).empty)
-		throw new Exception("Dirty object directory: " ~ objDir);
 
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
