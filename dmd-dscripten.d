@@ -224,7 +224,7 @@ string[] readResponseFile(string fileName)
 		if (c == '"')
 			inQuote = !inQuote;
 		else
-		if (c == ' ' && !inQuote)
+		if ((c == ' ' || c == '\r' || c == '\n') && !inQuote)
 		{
 			if (arg.length)
 				result ~= arg;
