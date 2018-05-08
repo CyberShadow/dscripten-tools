@@ -16,6 +16,8 @@ import std.algorithm.iteration;
 import std.algorithm.mutation;
 import std.algorithm.searching;
 import std.array;
+import std.digest.digest;
+import std.digest.md;
 import std.exception;
 import std.file;
 import std.format;
@@ -73,6 +75,12 @@ void main(string[] args)
 
 		compilerOpts = ["-output-bc", "-od" ~ objsLink, "-op"] ~ compilerOpts;
 	}
+
+	// Recognize .c / .llvm / .bc files on the command line, and include them in the compilation accordingly.
+	auto cFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".c"));
+	auto llvmFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".llvm"));
+	auto bcFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".bc"));
+
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
 		"-mtriple=" ~ target,
@@ -87,6 +95,35 @@ void main(string[] args)
 	if (build)
 	{
 		auto objFiles = dirEntries(objDir, "*.bc", SpanMode.depth).map!(de => de.name).array;
+
+		foreach (cFile; cFiles)
+		{
+			auto llvmFile = objDir.buildPath("c-" ~ toHexString(md5Of(cFile)) ~ ".llvm");
+			run([
+				llvmJSPath.buildPath("bin", "clang"),
+				"--target=" ~ target,
+				"-S",
+				"-c",
+				"-emit-llvm",
+				cFile,
+				"-o", llvmFile,
+				// TODO: optimize?
+			]);
+			llvmFiles ~= llvmFile;
+		}
+
+		foreach (llvmFile; llvmFiles)
+		{
+			auto bcFile = objDir.buildPath("llvm-" ~ toHexString(md5Of(llvmFile)) ~ ".bc");
+			run([
+				llvmJSPath.buildPath("bin", "llvm-as"),
+				llvmFile,
+				"-o=" ~ bcFile,
+			]);
+			bcFiles ~= bcFile;
+		}
+
+		objFiles ~= bcFiles;
 		auto linkedObjFile = objDir.buildPath("_all.bc");
 
 		auto llvmLinker = llvmJSPath.buildPath("bin", "llvm-link");
