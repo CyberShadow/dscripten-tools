@@ -71,7 +71,7 @@ void main(string[] args)
 		enforce(objDir, "Building with no objDir?");
 
 		// Ensure the object directory is empty, as we will be globbing it later.
-		if (objDir.exists && !objDir.dirEntries("*.bc", SpanMode.depth).empty)
+		if (objDir.exists && !objDir.dirEntries("*.bc", SpanMode.depth, false).empty)
 		{
 			if (objDir.startsWith("/tmp/.rdmd-"))
 			{
@@ -114,7 +114,7 @@ void main(string[] args)
 
 	if (build)
 	{
-		auto objFiles = dirEntries(objDir, "*.bc", SpanMode.depth).map!(de => de.name).array;
+		auto objFiles = dirEntries(objDir, "*.bc", SpanMode.depth, false).map!(de => de.name).array;
 
 		foreach (cFile; cFiles)
 		{
