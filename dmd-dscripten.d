@@ -40,6 +40,9 @@ void main(string[] args)
 	auto compiler = llvmJSPath.buildPath("bin", "ldmd2");
 	auto compilerOpts = args[1..$];
 
+	compilerOpts = compilerOpts.map!(
+		opt => opt.skipOver("@") ? readResponseFile(opt) : [opt]).join;
+
 	// Not only are the produced files not (directly) executable,
 	// -run changes how the command-line is parsed,
 	// so detect and forbid it explicitly to avoid any possible weird error messages.
@@ -196,6 +199,40 @@ void cleanLink(string link)
 	try
 		remove(link);
 	catch (Exception) {}
+}
+
+string[] readResponseFile(string fileName)
+{
+	auto s = fileName.readText;
+	string[] result;
+	string arg;
+	bool inQuote, backslash;
+	foreach (c; s)
+	{
+		if (backslash)
+		{
+			arg ~= c;
+			backslash = false;
+		}
+		else
+		if (c == '\\')
+			backslash = true;
+		else
+		if (c == '"')
+			inQuote = !inQuote;
+		else
+		if (c == ' ' && !inQuote)
+		{
+			if (arg.length)
+				result ~= arg;
+			arg = null;
+		}
+		else
+			arg ~= c;
+	}
+	if (arg.length)
+		result ~= arg;
+	return result;
 }
 
 void run(string[] args)
