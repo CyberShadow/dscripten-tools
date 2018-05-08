@@ -15,5 +15,9 @@ do
 		../../rdmd-dscripten --compiler=../../dmd-dscripten --build-only test.d
 		node test.js > output.txt
 		diff -u output.exp output.txt
+
+		printf '%s: OK\n' "$dir" 1>&2
 	)
 done
+
+printf 'All tests OK!\n' 1>&2
