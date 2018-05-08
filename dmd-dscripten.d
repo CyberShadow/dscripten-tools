@@ -81,6 +81,10 @@ void main(string[] args)
 	auto llvmFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".llvm"));
 	auto bcFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".bc"));
 
+	// Ensure the object directory is empty, as we will be globbing it later.
+	if (objDir.exists && !objDir.dirEntries("*.bc", SpanMode.depth).empty)
+		throw new Exception("Dirty object directory: " ~ objDir);
+
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
 		"-mtriple=" ~ target,
