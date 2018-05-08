@@ -46,6 +46,14 @@ void main(string[] args)
 	enum objsLink = ".dscripten-objs"; scope(exit) cleanLink(objsLink);
 	enum rootLink = ".dscripten-root"; scope(exit) cleanLink(rootLink);
 
+	// Include ourselves in the verbose output for rdmd to pick up,
+	// so that changes in the tools causes a rebuild.
+	if (compilerOpts.canFind("-v"))
+	{
+		stdout.writeln("binary    ", toolsPath.buildPath("dmd-dscripten"));
+		stdout.writeln("binary    ", toolsPath.buildPath("rdmd-dscripten"));
+	}
+
 	// Add runtime to import paths
 	string objDir, outputFile;
 	compilerOpts.extract!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
