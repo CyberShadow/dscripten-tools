@@ -95,3 +95,5 @@ $ rdmd-dscripten --compiler=dmd-dscripten --build-only worker.d
 ```
 
 This will create `worker.js`.
+
+For more examples, see [the testsuite](https://github.com/CyberShadow/dscripten-tools/tree/master/test).
