@@ -919,6 +919,47 @@ Lcontinue:
     return curcapacity / size;
 }
 
+version(dscripten) {
+// Pull these in. TODO should probably compile them unconditionally somehow
+import rt.typeinfo.ti_Acdouble;
+import rt.typeinfo.ti_Acfloat;
+import rt.typeinfo.ti_Acreal;
+import rt.typeinfo.ti_Adouble;
+import rt.typeinfo.ti_Afloat;
+import rt.typeinfo.ti_Ag;
+import rt.typeinfo.ti_Aint;
+import rt.typeinfo.ti_Along;
+import rt.typeinfo.ti_Areal;
+import rt.typeinfo.ti_Ashort;
+import rt.typeinfo.ti_byte;
+import rt.typeinfo.ti_C;
+import rt.typeinfo.ti_cdouble;
+import rt.typeinfo.ti_cent;
+import rt.typeinfo.ti_cfloat;
+import rt.typeinfo.ti_char;
+import rt.typeinfo.ti_creal;
+import rt.typeinfo.ti_dchar;
+import rt.typeinfo.ti_delegate;
+import rt.typeinfo.ti_double;
+import rt.typeinfo.ti_float;
+import rt.typeinfo.ti_idouble;
+import rt.typeinfo.ti_ifloat;
+import rt.typeinfo.ti_int;
+import rt.typeinfo.ti_ireal;
+import rt.typeinfo.ti_long;
+import rt.typeinfo.ti_n;
+import rt.typeinfo.ti_ptr;
+import rt.typeinfo.ti_real;
+import rt.typeinfo.ti_short;
+import rt.typeinfo.ti_ubyte;
+import rt.typeinfo.ti_ucent;
+import rt.typeinfo.ti_uint;
+import rt.typeinfo.ti_ulong;
+import rt.typeinfo.ti_ushort;
+import rt.typeinfo.ti_void;
+import rt.typeinfo.ti_wchar;
+}
+
 /**
  * Allocate a new uninitialized array of length elements.
  * ti is the type of the resulting array, or pointer to element.
@@ -928,7 +969,11 @@ extern (C) void[] _d_newarrayU(const TypeInfo ti, size_t length) pure nothrow
 {
     import core.exception : onOutOfMemoryError;
 
-    auto tinext = unqualify(ti.next);
+    //import core.stdc.stdio; debug printf("aoeu %p\n", ti);
+    auto tinext_ = ti.next;
+    //import core.stdc.stdio; debug printf("aoeu2\n");
+    auto tinext = unqualify(tinext_);
+    //import core.stdc.stdio; debug printf("aoeu3\n");
     auto size = tinext.tsize;
 
     debug(PRINTF) printf("_d_newarrayU(length = x%x, size = %d)\n", length, size);

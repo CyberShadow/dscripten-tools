@@ -821,6 +821,11 @@ Throws: $(D ErrnoException) in case of error.
                 import core.sys.posix.stdio : fdopen;
                 auto fp = fdopen(fd, modez);
             }
+            else version (dscripten)
+            {
+                import core.sys.posix.stdio : fdopen;
+                auto fp = fdopen(fd, modez);
+            }
             errnoEnforce(fp);
         }
         this = File(fp, name);
@@ -1204,6 +1209,11 @@ Throws: $(D Exception) if the file is not opened.
             import core.sys.posix.stdio : fseeko, off_t;
             alias fseekFun = fseeko;
         }
+        else version (dscripten)
+        {
+            import core.sys.posix.stdio : fseek, off_t;
+            alias fseekFun = fseek;
+        }
         errnoEnforce(fseekFun(_p.handle, to!off_t(offset), origin) == 0,
                 "Could not seek in file `"~_name~"'");
     }
@@ -1256,6 +1266,11 @@ Throws: $(D Exception) if the file is not opened.
                 immutable result = ftell(cast(FILE*) _p.handle);
         }
         else version (Posix)
+        {
+            import core.sys.posix.stdio : ftello;
+            immutable result = ftello(cast(FILE*) _p.handle);
+        }
+        else version (dscripten)
         {
             import core.sys.posix.stdio : ftello;
             immutable result = ftello(cast(FILE*) _p.handle);
@@ -1391,6 +1406,7 @@ $(UL
  $(LI Not all NFS implementations correctly implement file locking.)
 )
  */
+    version(dscripten) {} else
     void lock(LockType lockType = LockType.readWrite,
         ulong start = 0, ulong length = 0)
     {
@@ -1425,6 +1441,7 @@ If both $(D start) and $(D length) are zero, the entire file is locked.
 Returns: $(D true) if the lock was successful, and $(D false) if the
 specified file segment was already locked.
  */
+    version(dscripten) {} else
     bool tryLock(LockType lockType = LockType.readWrite,
         ulong start = 0, ulong length = 0)
     {
@@ -1466,6 +1483,7 @@ specified file segment was already locked.
 /**
 Removes the lock over the specified file segment.
  */
+    version(dscripten) {} else
     void unlock(ulong start = 0, ulong length = 0)
     {
         import std.exception : enforce;
@@ -5210,6 +5228,23 @@ private size_t readlnImpl(FILE* fps, ref char[] buf, dchar terminator, File.Orie
             return buf.length;
         }
         else version (Posix)
+        {
+            import std.utf : encode;
+            buf.length = 0;
+            for (int c; (c = FGETWC(fp)) != -1; )
+            {
+                if ((c & ~0x7F) == 0)
+                    buf ~= cast(char) c;
+                else
+                    encode(buf, cast(dchar) c);
+                if (c == terminator)
+                    break;
+            }
+            if (ferror(fps))
+                StdioException();
+            return buf.length;
+        }
+        else version (dscripten)
         {
             import std.utf : encode;
             buf.length = 0;

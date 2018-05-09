@@ -294,7 +294,10 @@ else version( CRuntime_Bionic )
 }
 else version( dscripten )
 {
-    // TODO
+    enum
+    {
+        EOF = -1,
+    }
 }
 else
 {
@@ -1447,7 +1450,17 @@ else version( CRuntime_Bionic )
 }
 else version( dscripten )
 {
+  @trusted
+  {
+    void rewind(FILE* stream);
+    pure void clearerr(FILE* stream);
+    pure int  feof(FILE* stream);
+    pure int  ferror(FILE* stream);
+    int  fileno(FILE *);
+  }
+
     int  snprintf(scope char* s, size_t n, scope const char* format, ...);
+    int  vsnprintf(scope char* s, size_t n, scope const char* format, va_list arg);
 
     /// TODO
 }
