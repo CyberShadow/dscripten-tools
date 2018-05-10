@@ -26,7 +26,12 @@ function RunTest() {
 		--build-only
 	)
 
-	"${args[@]}" "${extra_args[@]}" test.d
+	if [[ ${#extra_args[@]} -gt 0 ]]
+	then
+		args+=("${extra_args[@]}")
+	fi
+
+	"${args[@]}" test.d
 
 	node test.js > output.txt
 	diff -u output.exp output.txt
