@@ -33,3 +33,8 @@ function RunTest() {
 
 	printf '  >>> OK\n' 1>&2
 }
+
+function SkipTest() {
+	printf '  >>> Skipped!\n' 1>&2
+	exit 0
+}
