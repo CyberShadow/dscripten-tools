@@ -2,44 +2,13 @@
 set -euo pipefail
 shopt -s lastpipe
 
-# Ensure tools are built
-
-for prog in {dmd,rdmd}-dscripten
-do
-	rdmd --build-only -g ../$prog
-done
-
 for dir in ./t????-*
 do
 	(
 		cd "$dir"
-
-		args=(
-			../../rdmd-dscripten
-			--compiler=../../dmd-dscripten
-			--build-only
-		)
-
-		find . -name '*.c' -print0 | \
-			while read -r -d $'\0' f
-			do
-				args+=(--extra-file="$f")
-			done
-
-		if [[ -f args.txt ]]
-		then
-			while read -r -d $'\n' arg
-			do
-				args+=("$arg")
-			done < args.txt
-		fi
-
-		"${args[@]}" test.d
-
-		node test.js > output.txt
-		diff -u output.exp output.txt
-
-		printf '%s: OK\n' "$dir" 1>&2
+		printf '%s:\n' "$dir" 1>&2
+		./run-test.sh
+		printf '  >>> OK\n' 1>&2
 	)
 done
 
