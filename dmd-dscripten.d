@@ -101,6 +101,11 @@ void main(string[] args)
 	auto llvmFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".llvm"));
 	auto bcFiles = compilerOpts.extract!(arg => !arg.startsWith("-") && arg.endsWith(".bc"));
 
+	// Extract additional emcc options
+	string[] emccExtra = compilerOpts.extract!((ref arg) => arg.skipOver("--emcc="));
+	foreach (opt; compilerOpts.extract!((ref arg) => arg.skipOver("--emcc-s=")))
+		emccExtra ~= ["-s", opt];
+
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
 		"-mtriple=" ~ target,
@@ -171,6 +176,8 @@ void main(string[] args)
 			"-w", linkedObjFile,
 			"-o", outputFile ~ ".js",
 		];
+
+		emccArgs ~= emccExtra;
 
 		run(emccArgs);
 		if (exists(outputFile ~ ".js"))
