@@ -131,6 +131,7 @@ void main(string[] args)
 	{
 		stderr.writeln();
 		stderr.writeln("Additional dmd-dscripten options:");
+		stderr.writeln("  --wasm            configure for WebAssembly output");
 		stderr.writeln("  --emcc=SWITCH     pass SWITCH on to emcc's command line");
 		stderr.writeln("  --emcc-s=OPTION   shorthand for --emcc=-s --emcc=OPTION");
 		stderr.writeln();
