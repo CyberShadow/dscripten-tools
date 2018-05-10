@@ -62,7 +62,7 @@ void main(string[] args)
 	// Add runtime to import paths
 	string objDir, outputFile;
 	compilerOpts.extract!(opt => opt.startsWith("-of")).each!(opt => outputFile = opt[3..$]);
-	bool build = !compilerOpts.canFind("-o-");
+	bool build = compilerOpts.canFind!(arg => !arg.startsWith("-")) && !compilerOpts.canFind("-o-");
 
 	if (build)
 	{
