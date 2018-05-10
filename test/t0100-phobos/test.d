@@ -9,8 +9,6 @@ import core.stdc.stdio;
 import dscripten.standard; // TODO: should be unnecessary
 import dscripten.memory;
 
-extern(C) void gc_init();
-
 void puts(in char[] s)
 {
 	printf("%.*s\n", s.length, s.ptr);
