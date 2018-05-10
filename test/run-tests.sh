@@ -26,6 +26,14 @@ do
 				args+=(--extra-file="$f")
 			done
 
+		if [[ -f args.txt ]]
+		then
+			while read -r -d $'\n' arg
+			do
+				args+=("$arg")
+			done < args.txt
+		fi
+
 		"${args[@]}" test.d
 
 		node test.js > output.txt

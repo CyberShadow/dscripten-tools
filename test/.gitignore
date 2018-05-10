@@ -1,2 +1,3 @@
 /t*/*.js
-/t*/*.txt
+/t*/*.wasm
+/t*/output.txt

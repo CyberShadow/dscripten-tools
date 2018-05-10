@@ -107,6 +107,15 @@ void main(string[] args)
 	foreach (opt; compilerOpts.extract!((ref arg) => arg.skipOver("--emcc-s=")))
 		emccExtra ~= ["-s", opt];
 
+	bool wasm;
+	if (compilerOpts.extract!(arg => arg == "--wasm"))
+		wasm = true;
+
+	if (wasm)
+		compilerOpts ~= [
+			"-disable-loop-vectorization",
+		];
+
 	enum target = "asmjs-unknown-emscripten";
 	compilerOpts = [
 		"-mtriple=" ~ target,
@@ -178,7 +187,22 @@ void main(string[] args)
 				"-s", "BUILD_AS_WORKER=1",
 			];
 
+		bool optimize;
+
 		if (compilerOpts.canFind("-O"))
+			optimize = true;
+
+		if (wasm)
+		{
+			// Works around error:
+			// failed to asynchronously prepare wasm: LinkError:
+			// WebAssembly Instantiation: Import #6 module="env"
+			// function="core.cpuid.__ModuleInfo" error: global import
+			// must be a number
+			optimize = true;
+		}
+
+		if (optimize)
 			emccArgs ~= "-O3";
 
 		emccArgs ~= [
@@ -188,6 +212,9 @@ void main(string[] args)
 			"-w", linkedObjFile,
 			"-o", outputFile ~ ".js",
 		];
+
+		if (wasm)
+			emccArgs ~= ["-s", "WASM=1"];
 
 		emccArgs ~= emccExtra;
 
