@@ -2,6 +2,8 @@
 set -euo pipefail
 shopt -s lastpipe
 
+printf '%s:\n' "$(basename "$PWD")" 1>&2
+
 extra_args=()
 
 function BuildTools() {
@@ -28,4 +30,6 @@ function RunTest() {
 
 	node test.js > output.txt
 	diff -u output.exp output.txt
+
+	printf '  >>> OK\n' 1>&2
 }
