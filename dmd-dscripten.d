@@ -12,6 +12,7 @@ module dmd_dscripten;
 
 import core.sys.posix.unistd : isatty;
 
+import std.algorithm.comparison;
 import std.algorithm.iteration;
 import std.algorithm.mutation;
 import std.algorithm.searching;
@@ -116,6 +117,17 @@ void main(string[] args)
 	] ~ compilerOpts;
 
 	run([compiler] ~ compilerOpts);
+
+	if (compilerOpts.canFind!(opt => opt.among("-h", "--help")))
+	{
+		stderr.writeln();
+		stderr.writeln("Additional dmd-dscripten options:");
+		stderr.writeln("  --emcc=SWITCH     pass SWITCH on to emcc's command line");
+		stderr.writeln("  --emcc-s=OPTION   shorthand for --emcc=-s --emcc=OPTION");
+		stderr.writeln();
+		stderr.writeln("dmd-dscripten can also accept additional *.c, *.llvm and *.bc files");
+		stderr.writeln("to include in the build.");
+	}
 
 	if (build)
 	{
