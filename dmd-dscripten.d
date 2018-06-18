@@ -26,11 +26,9 @@ import std.path;
 import std.process;
 import std.stdio : stdout, stderr;
 
-bool verbose;
-
 void main(string[] args)
 {
-	verbose = args[1..$].canFind("-v") && isatty(stdout.fileno);
+	bool verbose = args[1..$].canFind("-v") && isatty(stdout.fileno);
 	if (verbose) stderr.writeln("dmd-dscripten: Args: ", args[1..$]);
 
 	auto toolchainsPath = environment.get("DSCRIPTEN_TOOLCHAINS", "/tmp/toolchains");
@@ -40,6 +38,13 @@ void main(string[] args)
 
 	auto compiler = llvmJSPath.buildPath("bin", "ldmd2");
 	auto compilerOpts = args[1..$];
+
+	void run(string[] args)
+	{
+		if (verbose) stderr.writeln("dmd-dscripten: Exec: ", args);
+		auto result = spawnProcess(args).wait();
+		enforce(result == 0, "%s exited with status %d".format(args[0].baseName, result));
+	}
 
 	compilerOpts = compilerOpts.map!(
 		opt => opt.skipOver("@") ? readResponseFile(opt) : [opt]).join;
@@ -283,11 +288,4 @@ string[] readResponseFile(string fileName)
 	if (arg.length)
 		result ~= arg;
 	return result;
-}
-
-void run(string[] args)
-{
-	if (verbose) stderr.writeln("dmd-dscripten: Exec: ", args);
-	auto result = spawnProcess(args).wait();
-	enforce(result == 0, "%s exited with status %d".format(args[0].baseName, result));
 }
