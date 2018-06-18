@@ -70,6 +70,7 @@ module worker;
 import core.stdc.stdio;
 import core.stdc.string;
 
+import dscripten.standard;
 import dscripten.emscripten;
 
 import ldc.attributes;
@@ -78,13 +79,13 @@ import ldc.attributes;
 extern(C)
 void myFunc(char* data, int size)
 {
-    foreach (i; 0..10)
+	foreach (i; 0..10)
 	{
 		char[32] buf;
 		sprintf(buf.ptr, "Working... %d", i);
-        workerRespondProvisionally(buf.ptr[0..strlen(buf.ptr)]);
-    }
-    workerRespond("Done!");
+		workerRespondProvisionally(buf.ptr[0..strlen(buf.ptr)]);
+	}
+	workerRespond("Done!");
 }
 ```
 
