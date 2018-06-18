@@ -42,7 +42,7 @@ void main(string[] args)
 	void run(string[] args)
 	{
 		if (verbose) stderr.writeln("dmd-dscripten: Exec: ", args);
-		auto result = spawnProcess(args).wait();
+		auto result = spawnProcess(args, ["LD_LIBRARY_PATH" : llvmJSPath.buildPath("lib")]).wait();
 		enforce(result == 0, "%s exited with status %d".format(args[0].baseName, result));
 	}
 
